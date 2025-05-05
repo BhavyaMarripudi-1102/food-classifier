@@ -12,9 +12,19 @@ from io import BytesIO
 import base64
 import uuid
 from datetime import datetime
+from pyngrok import ngrok
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logs
 
 app = Flask(__name__)
-app.secret_key = '2wZTT01oQwNa87GfpnMaXgeNSbf_vJi8iCG3UKWJsk3aoees'
+# app.secret_key = '2wZTT01oQwNa87GfpnMaXgeNSbf_vJi8iCG3UKWJsk3aoees'
+
+# Configure Ngrok only in Colab environment
+if 'COLAB_GPU' in os.environ:
+    from pyngrok import ngrok
+    ngrok.set_auth_token(os.getenv('NGROK_AUTHTOKEN', 'YOUR_AUTHTOKEN_HERE'))
+    public_url = ngrok.connect(5000).public_url
+    print(f" * Ngrok URL: {public_url}")
 
 # Configuration with robust path handling
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -153,6 +163,9 @@ def predict_food(image_data, model_name):
         print(f"Prediction error: {str(e)}")
         return None
 
+
+
+
 # --- Flask Routes ---
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -192,12 +205,18 @@ def index():
 # ... [Include all your other routes from previous implementation] ...
 
 if __name__ == '__main__':
-    # For Colab compatibility
-    try:
-        from flask_ngrok import run_with_ngrok
-        run_with_ngrok(app)
-        print("Running with ngrok for Colab")
-        app.run()
-    except ImportError:
-        print("Running locally")
-        app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    if 'COLAB_GPU' in os.environ:
+        app.run(host='0.0.0.0', port=port)
+    else:
+        app.run(host='0.0.0.0', port=port, debug=True)
+        
+    # # For Colab compatibility
+    # try:
+    #     from flask_ngrok import run_with_ngrok
+    #     run_with_ngrok(app)
+    #     print("Running with ngrok for Colab")
+    #     app.run()
+    # except ImportError:
+    #     print("Running locally")
+    #     app.run(debug=True)
