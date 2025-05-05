@@ -14,7 +14,7 @@ import uuid
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your-secure-secret-key'
+app.secret_key = '2wZTT01oQwNa87GfpnMaXgeNSbf_vJi8iCG3UKWJsk3aoees'
 
 # Configuration with robust path handling
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
