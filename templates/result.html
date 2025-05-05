@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="result-container">
+    <h1>Classification Results</h1>
+    
+    <div class="result-grid">
+        <div class="image-preview">
+            <img src="data:image/jpeg;base64,{{ img_data }}" alt="Uploaded food image">
+        </div>
+        
+        <div class="result-details">
+            <h2>{{ prediction.food_item|title }}</h2>
+            <p>Confidence: {{ prediction.confidence }}%</p>
+            <p>Model Used: {{ models[prediction.model_used] }}</p>
+            
+            <div class="nutrition-info">
+                <h3>Nutrition Information (per serving)</h3>
+                <ul>
+                    <li>Calories: {{ nutrition.calories|default('N/A') }}</li>
+                    <li>Protein: {{ nutrition.protein|default('N/A') }}g</li>
+                    <li>Carbs: {{ nutrition.carbs|default('N/A') }}g</li>
+                    <li>Fat: {{ nutrition.fat|default('N/A') }}g</li>
+                </ul>
+            </div>
+            
+            <div class="actions">
+                <a href="{{ url_for('index') }}" class="btn">Try Another</a>
+                <button class="btn" id="save-result">Save Result</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="model-comparison">
+        <h3>Compare with Other Models</h3>
+        <div class="model-buttons">
+            {% for model_id, model_name in models.items() %}
+                {% if model_id != prediction.model_used %}
+                    <form method="POST" action="{{ url_for('index') }}" style="display: inline;">
+                        <input type="hidden" name="image_url" value="{{ request.form.get('image_url', '') }}">
+                        <input type="hidden" name="model" value="{{ model_id }}">
+                        <button type="submit" class="btn small">{{ model_name }}</button>
+                    </form>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Food Classifier{% endblock %}
+
+{% block content %}
+<div class="classifier-container">
+    <h1>Food Classifier</h1>
+    
+    <div class="input-methods">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="upload">Upload Image</button>
+            <button class="tab-btn" data-tab="url">Image URL</button>
+            <button class="tab-btn" data-tab="camera">Live Camera</button>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" id="classifier-form">
+            <div class="tab-content active" id="upload-tab">
+                <input type="file" name="image_file" accept="image/*" required>
+            </div>
+            
+            <div class="tab-content" id="url-tab">
+                <input type="url" name="image_url" placeholder="https://example.com/food.jpg">
+            </div>
+            
+            <div class="tab-content" id="camera-tab">
+                <div class="camera-container">
+                    <video id="camera-feed" autoplay></video>
+                    <button type="button" id="capture-btn">Capture</button>
+                    <canvas id="camera-canvas" style="display:none;"></canvas>
+                </div>
+            </div>
+            
+            <div class="model-selection">
+                <label for="model">Select Model:</label>
+                <select name="model" id="model">
+                    {% for model_id, model_name in models.items() %}
+                        <option value="{{ model_id }}">{{ model_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn">Classify Food</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Tab switching and camera initialization will be handled by main.js
+    console.log("Index page loaded");
+</script>
+{% endblock %}

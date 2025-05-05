@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="history-container">
+    <h1>Your History</h1>
+    
+    <div class="history-actions">
+        <form method="POST" action="{{ url_for('clear_history') }}">
+            <button type="submit" class="btn danger">Clear All History</button>
+        </form>
+    </div>
+    
+    {% if history %}
+        <div class="history-list">
+            {% for item in history %}
+                <div class="history-item">
+                    <img src="{{ url_for('static', filename='uploads/' + item.image_path) if not item.image_path.startswith('http') else item.image_path }}" 
+                         alt="Food image" class="history-image">
+                    <div class="history-details">
+                        <h3>{{ item.prediction|title }}</h3>
+                        <p>Confidence: {{ item.confidence }}%</p>
+                        <p>Model: {{ item.model_used }}</p>
+                        <small>{{ item.created_at }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No history yet. Start classifying some food!</p>
+    {% endif %}
+</div>
+{% endblock %}
